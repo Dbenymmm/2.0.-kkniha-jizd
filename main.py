@@ -25,7 +25,114 @@ CARS_JSON = [
     "Spotřeba l/100km": 6.23,
     "Řidič/odpovědná osoba": "Kubišová Jana"
   },
-  # ... (další vozy beze změn)
+  {
+    "Firma": "OK ECONOMY s.r.o.",
+    "IČO": 44014929,
+    "Vozidlo": "Škoda Superb",
+    "RZ": "OKH00003",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.23,
+    "Řidič/odpovědná osoba": "Šimková Petra"
+  },
+  {
+    "Firma": "OK GROUP",
+    "IČO": 28110056,
+    "Vozidlo": "BMW 5",
+    "RZ": "OKH00033",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.4,
+    "Řidič/odpovědná osoba": "Ing. Michal Kubiš"
+  },
+  {
+    "Firma": "Agroteam CZ s.r.o.",
+    "IČO": 25561804,
+    "Vozidlo": "Škoda Kodiaq",
+    "RZ": "OKH30620",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 7.4,
+    "Řidič/odpovědná osoba": "Kubišová Iva"
+  },
+  {
+    "Firma": "OK Group a.s.",
+    "IČO": 25561804,
+    "Vozidlo": "BMW X5",
+    "RZ": "7AA3030",
+    "PHM": "Nafta",
+    "Spotřeba l/100km": 9.9,
+    "Řidič/odpovědná osoba": "Milan Ondra"
+  },
+  {
+    "Firma": "OK GROUP s.r.o.",
+    "IČO": 25561804,
+    "Vozidlo": "ASTON MARTIN",
+    "RZ": "OKH00007",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 10.2,
+    "Řidič/odpovědná osoba": "Ing. Vladimíra Kubišová"
+  },
+  {
+    "Firma": "OK Group a.s.,",
+    "IČO": 25561804,
+    "Vozidlo": "Škoda Superb",
+    "RZ": "2BZ1888",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.23,
+    "Řidič/odpovědná osoba": "Maloch Jan"
+  },
+  {
+    "Firma": "OK Group a.s.",
+    "IČO": 25561804,
+    "Vozidlo": "Škoda Superb",
+    "RZ": "2BZ1777",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.23,
+    "Řidič/odpovědná osoba": "Malochová Renata"
+  },
+  {
+    "Firma": "OK KLIENT a.s.",
+    "IČO": 29185114,
+    "Vozidlo": "BMW 5",
+    "RZ": "OKH00088",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.4,
+    "Řidič/odpovědná osoba": "Kubiš Radoslav ml."
+  },
+  {
+    "Firma": "OK Group a.s.",
+    "IČO": 25561804,
+    "Vozidlo": "BMW 5",
+    "RZ": "OKH00011",
+    "PHM": "Natural",
+    "Spotřeba l/100km": 6.4,
+    "Řidič/odpovědná osoba": "Ing Kubiš Radoslav"
+  },
+  {
+    "Firma": "Agroteam CZ s.r.o.",
+    "IČO": 25561804,
+    "Vozidlo": "LR Defender",
+    "RZ": "OKH00001",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 11,
+    "Řidič/odpovědná osoba": "Ing. Kubiš Radoslav"
+  },
+  {
+    "Firma": "Agroteam CZ s.r.o.",
+    "IČO": 25561804,
+    "Vozidlo": "Range Rover",
+    "RZ": "0KH11111",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 10.2,
+    "Řidič/odpovědná osoba": "Ing. Kubiš Radoslav"
+  },
+  {
+    "Firma": "OK GRANT s.r.o.",
+    "IČO": 28268318,
+    "Vozidlo": "BMW 8",
+    "RZ": "0KH00002",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 7.4,
+    "Řidič/odpovědná osoba": "Ing. Vladimíra Kubišová"
+  }
 ]
 
 EXCEL_TEMPLATE_PATH = "Template_Kniha_jizd_simulace.xlsx"
