@@ -1,160 +1,148 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8" />
-  <title>Kniha jízd 2.0</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 2em;}
-    .container { background: #fff; padding: 2em; border-radius: 12px; max-width: 700px; margin: 0 auto; box-shadow: 0 0 10px #ddd;}
-    h1 { text-align: center; }
-    label { font-weight: bold; }
-    .row { margin-bottom: 1.3em;}
-    select, input, button { padding: .5em; border-radius: 6px; border: 1px solid #bbb; font-size: 1em;}
-    table { width: 100%; border-collapse: collapse; margin-top: 1em; }
-    th, td { border: 1px solid #ddd; padding: .4em; text-align: left;}
-    th { background: #f1f1f1; }
-    .center { text-align: center;}
-    .success { color: green; margin-top: 1em;}
-    .error { color: #c00; margin-top: 1em;}
-    .actions { margin-top: 2em; text-align: center; }
-    .small { font-size: .85em; color: #888;}
-  </style>
-</head>
-<body>
-<div class="container">
-  <h1>Kniha jízd 2.0</h1>
-
-  <div class="row">
-    <label for="car-select">Vyberte vozidlo:</label><br>
-    <select id="car-select">
-      <option value="">-- Zvolte vozidlo --</option>
-    </select>
-  </div>
-
-  <div class="row">
-    <label>Události (každý řádek = jedna událost):</label>
-    <table id="events-table">
-      <thead>
-        <tr>
-          <th>Druh události</th>
-          <th>Datum</th>
-          <th>Datum konce</th>
-          <th>Místo</th>
-          <th>Poznámka</th>
-          <th>Množství (l)</th>
-          <th>Smazat</th>
-        </tr>
-      </thead>
-      <tbody id="events-body"></tbody>
-    </table>
-    <button type="button" onclick="addEventRow()">Přidat událost</button>
-    <div class="small">Pro ubytování zadejte také datum konce. Množství (l) vyplňte jen pro tankování.</div>
-  </div>
-
-  <div class="actions">
-    <button type="button" onclick="simulate()" style="font-size:1.2em;">Simulovat a stáhnout Excel</button>
-  </div>
-  <div id="result"></div>
-</div>
-
 <script>
-let cars = [];
-
-function fetchCars() {
-  fetch('/cars')
-    .then(res => res.json())
-    .then(data => {
-      cars = data;
-      let select = document.getElementById("car-select");
-      select.innerHTML = '<option value="">-- Zvolte vozidlo --</option>';
-      data.forEach((car, i) => {
-        let opt = document.createElement("option");
-        opt.value = i;
-        opt.innerText = `${car.RZ} (${car.Vozidlo})`;
-        select.appendChild(opt);
-      });
-    });
-}
-
-function addEventRow() {
-  let tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>
-      <select>
-        <option value="">--</option>
-        <option value="Tankování">Tankování</option>
-        <option value="Ubytování">Ubytování</option>
-        <option value="Hotel">Hotel</option>
-        <option value="Technická kontrola">Technická kontrola</option>
-        <option value="Jiné">Jiné</option>
-      </select>
-    </td>
-    <td><input type="date"></td>
-    <td><input type="date"></td>
-    <td><input type="text" placeholder="Zadejte místo"></td>
-    <td><input type="text" placeholder="Poznámka"></td>
-    <td><input type="number" step="0.01" min="0"></td>
-    <td class="center"><button type="button" onclick="this.closest('tr').remove()">❌</button></td>
-  `;
-  document.getElementById("events-body").appendChild(tr);
-}
-addEventRow(); // První řádek po načtení
-
-function simulate() {
-  document.getElementById("result").innerHTML = "";
-  let carIdx = document.getElementById("car-select").value;
-  if (carIdx === "") { showError("Vyberte vozidlo."); return; }
-  let car = cars[carIdx];
-  let events = [];
-  let valid = true;
-  document.querySelectorAll("#events-body tr").forEach(tr => {
-    let tds = tr.querySelectorAll("td");
-    let typ = tds[0].querySelector('select').value;
-    let datum = tds[1].querySelector('input').value;
-    let datum_konec = tds[2].querySelector('input').value;
-    let misto = tds[3].querySelector('input').value.trim();
-    let poznamka = tds[4].querySelector('input').value.trim();
-    let mnozstvi = tds[5].querySelector('input').value;
-    // Validation
-    if (!typ || !datum || !misto) {
-      valid = false;
-    }
-    events.push({
-      typ,
-      datum,
-      datum_konec: (typ === "Ubytování" || typ === "Jiné") ? datum_konec : "",
-      misto,
-      poznamka,
-      mnozstvi: typ === "Tankování" ? parseFloat(mnozstvi || 0) : ""
-    });
-  });
-  if (!valid) {
-    showError("Vyplňte druh, datum a místo u všech událostí!");
-    return;
+const cars = [
+[
+  {
+    "Firma": "OK BROKERS s.r.o.",
+    "IČO": 25267001,
+    "Vozidlo": "Škoda Superb",
+    "RZ": "8M15169",
+    "PHM": "Nafta",
+    "Spotřeba l/100km": 6.23,
+    "Řidič/odpovědná osoba": "Kubišová Jana"
+  },
+  {
+    "Firma": "OK ECONOMY s.r.o.",
+    "IČO": 44014929,
+    "Vozidlo": "Škoda Superb",
+    "RZ": "OKH00003",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.23,
+    "Řidič/odpovědná osoba": "Šimková Petra"
+  },
+  {
+    "Firma": "OK GROUP",
+    "IČO": 28110056,
+    "Vozidlo": "BMW 5",
+    "RZ": "OKH00033",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.4,
+    "Řidič/odpovědná osoba": "Ing. Michal Kubiš"
+  },
+  {
+    "Firma": "Agroteam CZ s.r.o.",
+    "IČO": 25561804,
+    "Vozidlo": "Škoda Kodiaq",
+    "RZ": "OKH30620",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 7.4,
+    "Řidič/odpovědná osoba": "Kubišová Iva"
+  },
+  {
+    "Firma": "OK Group a.s.",
+    "IČO": 25561804,
+    "Vozidlo": "BMW X5",
+    "RZ": "7AA3030",
+    "PHM": "Nafta",
+    "Spotřeba l/100km": 9.9,
+    "Řidič/odpovědná osoba": "Milan Ondra"
+  },
+  {
+    "Firma": "OK GROUP s.r.o.",
+    "IČO": 25561804,
+    "Vozidlo": "ASTON MARTIN",
+    "RZ": "OKH00007",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 10.2,
+    "Řidič/odpovědná osoba": "Ing. Vladimíra Kubišová"
+  },
+  {
+    "Firma": "OK Group a.s.,",
+    "IČO": 25561804,
+    "Vozidlo": "Škoda Superb",
+    "RZ": "2BZ1888",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.23,
+    "Řidič/odpovědná osoba": "Maloch Jan"
+  },
+  {
+    "Firma": "OK Group a.s.",
+    "IČO": 25561804,
+    "Vozidlo": "Škoda Superb",
+    "RZ": "2BZ1777",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.23,
+    "Řidič/odpovědná osoba": "Malochová Renata"
+  },
+  {
+    "Firma": "OK KLIENT a.s.",
+    "IČO": 29185114,
+    "Vozidlo": "BMW 5",
+    "RZ": "OKH00088",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 6.4,
+    "Řidič/odpovědná osoba": "Kubiš Radoslav ml."
+  },
+  {
+    "Firma": "OK Group a.s.",
+    "IČO": 25561804,
+    "Vozidlo": "BMW 5",
+    "RZ": "OKH00011",
+    "PHM": "Natural",
+    "Spotřeba l/100km": 6.4,
+    "Řidič/odpovědná osoba": "Ing Kubiš Radoslav"
+  },
+  {
+    "Firma": "Agroteam CZ s.r.o.",
+    "IČO": 25561804,
+    "Vozidlo": "LR Defender",
+    "RZ": "OKH00001",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 11,
+    "Řidič/odpovědná osoba": "Ing. Kubiš Radoslav"
+  },
+  {
+    "Firma": "Agroteam CZ s.r.o.",
+    "IČO": 25561804,
+    "Vozidlo": "Range Rover",
+    "RZ": "0KH11111",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 10.2,
+    "Řidič/odpovědná osoba": "Ing. Kubiš Radoslav"
+  },
+  {
+    "Firma": "OK GRANT s.r.o.",
+    "IČO": 28268318,
+    "Vozidlo": "BMW 8",
+    "RZ": "0KH00002",
+    "PHM": "Benzín",
+    "Spotřeba l/100km": 7.4,
+    "Řidič/odpovědná osoba": "Ing. Vladimíra Kubišová"
   }
-  document.getElementById("result").innerHTML = "Simulace probíhá...";
-  fetch("/simulate", {
-    method: "POST",
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({car, events})
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.success) {
-      document.getElementById("result").innerHTML =
-        `<a class="success" href="${data.download_url}">Stáhnout vygenerovaný Excel</a>`;
-    } else {
-      showError("Simulace se nezdařila. Zkuste znovu.");
-    }
-  })
-  .catch(err => showError("Chyba připojení k serveru."));
-}
-function showError(msg) {
-  document.getElementById("result").innerHTML = `<span class="error">${msg}</span>`;
-}
+]
 
-fetchCars();
+// Vyplní select menu
+window.onload = () => {
+  const carSelect = document.getElementById("car-select");
+  cars.forEach(car => {
+    const opt = document.createElement("option");
+    opt.value = car.RZ;
+    opt.text = `${car.RZ} (${car.Vozidlo})`;
+    carSelect.appendChild(opt);
+  });
+};
+
+function fillCarHeader() {
+  const car = cars.find(c => c.RZ === document.getElementById("car-select").value);
+  let out = "";
+  if(car){
+    out += `<strong>Firma:</strong> ${car.Firma}<br>`;
+    out += `<strong>IČO:</strong> ${car["IČO"]}<br>`;
+    out += `<strong>Vozidlo:</strong> ${car.Vozidlo}<br>`;
+    out += `<strong>RZ:</strong> ${car.RZ}<br>`;
+    out += `<strong>PHM:</strong> ${car.PHM}<br>`;
+    out += `<strong>Řidič:</strong> ${car.Řidič}<br>`;
+    out += `<strong>Spotřeba:</strong> ${car.Spotřeba} l/100km<br>`;
+  }
+  document.getElementById("car-header").innerHTML = out;
+}
 </script>
-</body>
-</html>
