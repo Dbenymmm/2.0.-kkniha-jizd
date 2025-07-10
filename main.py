@@ -12,7 +12,7 @@ import openai
 
 # --- TVŮJ MAPY.CZ a OpenAI KLÍČ ---
 MAPYCZ_API_KEY = "bpImyVMf55mk8c8ayWQde_xazVqCbPb8YXAFdnfB8"
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "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"
 client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 CARS_JSON = [
