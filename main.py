@@ -13,7 +13,7 @@ import openai
 # --- TVŮJ MAPY.CZ a OpenAI KLÍČ ---
 MAPYCZ_API_KEY = "bpImyVMf55mk8c8ayWQde_xazVqCbPb8YXAFdnfB8"
 OPENAI_API_KEY = "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"
-openai.api_key = OPENAI_API_KEY
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 CARS_JSON = [
   {
@@ -230,15 +230,16 @@ async def simulate(request: Request):
     prompt = prepare_ai_prompt(car, expanded_events, real_distances)
 
     # 4. Zavolej OpenAI (GPT-4o)
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
-        ],
-        max_tokens=2000,
-        temperature=0.05,
+    ],
+    max_tokens=2000,
+    temperature=0.05,
     )
+    result = response.choices[0].message.content
 
     # 5. Zpracuj odpověď OpenAI (musí být pole pole, tedy [ [...], [...], ... ])
     import ast
